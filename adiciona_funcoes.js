@@ -1,74 +1,46 @@
 import fs from "fs/promises"
+const caminhoAteArquivo = "./tarefas.json"
+
 import promptSync from "prompt-sync"
 
 const prompt = promptSync()
-const caminhoAteArquivo = "./tarefas.json"
+
 
 export async function mostrarMenu() {
+  console.log(`
+    1. Criar uma nova tarefa:
 
-  let opcao = ''
-  do{
-    console.log(`
-        1. Criar uma nova tarefa:
+      - ○ O usuário deve fornecer um título e uma descrição.
+      - ○ O sistema deve atribuir um id automaticamente (o maior id
+      - existente + 1).
+      - ○ A tarefa será salva no arquivo tarefas.json.
 
-          - ○ O usuário deve fornecer um título e uma descrição.
-          - ○ O sistema deve atribuir um id automaticamente (o maior id
-          - existente + 1).
-          - ○ A tarefa será salva no arquivo tarefas.json.
+    2. Visualizar todas as tarefas:
 
-        2. Visualizar todas as tarefas:
+      - ○ Exibir todas as tarefas cadastradas no arquivo tarefas.json.
 
-          - ○ Exibir todas as tarefas cadastradas no arquivo tarefas.json.
+    3. Visualizar apenas tarefas concluídas:
 
-        3. Visualizar apenas tarefas concluídas:
+      - ○ Filtrar e exibir apenas as tarefas cujo status concluida seja
+    true.
 
-          - ○ Filtrar e exibir apenas as tarefas cujo status concluida seja
-        true.
+    4. Visualizar apenas tarefas não concluídas:
 
-        4. Visualizar apenas tarefas não concluídas:
+      - ○ Filtrar e exibir apenas as tarefas cujo status concluida seja
+    false.
 
-          - ○ Filtrar e exibir apenas as tarefas cujo status concluida seja
-        false.
+    5. Concluir uma tarefa:
 
-        5. Concluir uma tarefa:
+      - ○ O usuário informa o id da tarefa que deseja concluir.
+      - ○ O sistema atualiza a tarefa correspondente, alterando o status
+      concluida para true.
+      - ○ O arquivo tarefas.json é atualizado com essa modificação.
 
-          - ○ O usuário informa o id da tarefa que deseja concluir.
-          - ○ O sistema atualiza a tarefa correspondente, alterando o status
-          concluida para true.
-          - ○ O arquivo tarefas.json é atualizado com essa modificação.
+    6. Sair:
 
-        6. Sair:
+      - Finaliza a execução do programa.
 
-          - Finaliza a execução do programa.
-
-  `)
-
-  opcao = prompt("Qual opção deseja? ")
-  
-    switch(opcao){
-      case "1":
-         await  criarTarefa()
-        break
-      case "2":
-        await VisualizarTodasTarefas()
-        break
-      case "3":
-        await VisualizarTarefasConcluidas()
-        break 
-      case "4":
-        await VisualizarTarefasNaoConcluidas()
-        break
-      case "5":
-        await concluirTarefas()
-        break
-      case "6":
-        console.log("saindo do MENU! ")
-        break
-      default:
-        console.log("Opção invalida!. Tente outra opção... ")     
-    }
-}
-while(opcao !== "6")
+`)
 }
 
 export async function lerTarefas() {
@@ -97,8 +69,11 @@ export async function criarTarefa() {
   const descricao = prompt('Digite a descrição da tarefa: ') 
 
     const tarefas = await lerTarefas()
-
-    const novoId = tarefas.length + 1
+    
+    if(tarefas.length == 0){
+      novoId = 1
+    }
+    const novoId = tarefas[tarefas.length - 1].id + 1
 
     const novaTarefa = {
       id: novoId,
